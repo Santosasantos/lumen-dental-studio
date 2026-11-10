@@ -16,7 +16,7 @@ export function Services() {
               <span className="grid h-12 w-12 place-items-center rounded-2xl bg-teal-50 text-teal-700"><Icon name={s.icon} className="h-6 w-6" /></span>
               <h3 className="mt-5 text-lg font-semibold">{s.title}</h3>
               <p className="mt-2 flex-1 text-ink/70">{s.text}</p>
-              <p className="mt-5 text-sm text-ink/60">From <span className="text-base font-semibold text-ink">${s.from.toLocaleString("en-US")}</span></p>
+              <p className="mt-5 text-sm text-ink/70">From <span className="text-base font-semibold text-ink">${s.from.toLocaleString("en-US")}</span></p>
             </article>
           ))}
         </div>

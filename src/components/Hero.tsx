@@ -54,7 +54,7 @@ export function Hero() {
         <div className="relative rounded-3xl bg-white p-6 shadow-[0_30px_60px_-30px_rgba(15,42,43,.35)] ring-1 ring-ink/5 sm:p-8">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-ink/60">Check-up &amp; cleaning</p>
+              <p className="text-sm text-ink/70">Check-up &amp; cleaning</p>
               <p className="text-xl font-semibold">Choose a time</p>
             </div>
             <span className="grid h-11 w-11 place-items-center rounded-full bg-teal-50 text-teal-700"><Icon name="calendar" /></span>
@@ -87,10 +87,10 @@ export function Hero() {
             ))}
           </div>
 
-          <a href="#book" className={`btn-primary mt-6 w-full ${slot ? "" : "pointer-events-none opacity-40"}`} aria-disabled={!slot}>
+          <a href="#book" className={`btn-primary mt-6 w-full ${slot ? "" : "pointer-events-none !bg-ink/10 !text-ink/70"}`} aria-disabled={!slot}>
             {slot ? `Continue with ${slot}` : "Pick a time to continue"}
           </a>
-          <p className="mt-3 text-center text-xs text-ink/50">Free cancellation up to 24 hours before</p>
+          <p className="mt-3 text-center text-xs text-ink/70">Free cancellation up to 24 hours before</p>
         </div>
       </div>
     </section>

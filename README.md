@@ -4,7 +4,7 @@ A fast, mobile-friendly landing page with online appointment booking for a denta
 
 Built with **Next.js 14**, **React 18**, **TypeScript** and **Tailwind CSS**.
 
-> **Live demo:** _add your Vercel link here_
+> **Live demo:** [lumen-dental-studio-pi.vercel.app](https://lumen-dental-studio-pi.vercel.app)
 >
 > Portfolio project. "Lumen Dental Studio" is a fictional clinic; all names, prices and contact details are placeholders.
 

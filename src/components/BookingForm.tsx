@@ -111,11 +111,11 @@ export function BookingForm() {
         </select>
       </div>
       <div className="sm:col-span-2">
-        <label htmlFor="f-notes" className="mb-1.5 block text-sm font-medium">Anything we should know? <span className="font-normal text-ink/50">(optional)</span></label>
+        <label htmlFor="f-notes" className="mb-1.5 block text-sm font-medium">Anything we should know? <span className="font-normal text-ink/70">(optional)</span></label>
         <textarea id="f-notes" rows={3} className="field resize-none" value={values.notes} onChange={set("notes")} placeholder="E.g. tooth pain, nervous about visits, insurance details" />
       </div>
       <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-ink/55">We&apos;ll only use your details to arrange your visit.</p>
+        <p className="text-sm text-ink/70">We&apos;ll only use your details to arrange your visit.</p>
         <button type="submit" className="btn-primary min-w-[200px]" disabled={status === "sending"}>
           {status === "sending" ? "Sending…" : "Request appointment"}
         </button>

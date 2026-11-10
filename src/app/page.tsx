@@ -28,7 +28,7 @@ export default function Home() {
         <Faq />
         <Contact />
       </main>
-      <footer className="bg-teal-900 pb-10 text-sm text-white/50">
+      <footer className="bg-teal-900 pb-10 text-sm text-white/70">
         <div className="container-site flex flex-col justify-between gap-2 border-t border-white/10 pt-6 sm:flex-row">
           <p>© {new Date().getFullYear()} {clinic.name}. Demo project. The clinic is fictional.</p>
           <p>Designed &amp; built by Md. Rabiul Islam</p>

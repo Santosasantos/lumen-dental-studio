@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; }
+body { @apply bg-cream text-ink antialiased; }
+::selection { @apply bg-teal-100; }
+
+@layer components {
+  .container-site { @apply mx-auto w-full max-w-site px-5 sm:px-8; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[15px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600; }
+  .btn-primary { @apply btn bg-teal-700 text-white hover:bg-teal-800; }
+  .btn-ghost { @apply btn border border-ink/15 text-ink hover:border-ink/40; }
+  .eyebrow { @apply text-[13px] font-semibold uppercase tracking-[0.14em] text-teal-600; }
+  .h2 { @apply text-3xl font-semibold tracking-tight sm:text-4xl; }
+  .field { @apply w-full rounded-xl border border-ink/15 bg-white px-4 py-3 text-[15px] outline-none transition placeholder:text-ink/40 focus:border-teal-600 focus:ring-4 focus:ring-teal-100; }
+}
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }

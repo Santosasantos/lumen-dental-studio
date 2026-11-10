@@ -12,14 +12,20 @@ Built with **Next.js 14**, **React 18**, **TypeScript** and **Tailwind CSS**.
 
 ## Highlights
 
+- **Interactive smile preview.** A before/after whitening slider visitors can drag, tap or control with the keyboard, with a short demo sweep when it scrolls into view.
+- **Smooth, purposeful animation.** Staggered hero entrance, soft animated background shapes, floating info cards, scroll-reveal sections and hover effects, all switched off automatically for visitors who prefer reduced motion.
+- **One-click booking from anywhere.** Every service card has a "Book" button that pre-selects that service in the form; a sticky booking bar appears on phones.
 - **Interactive time picker.** Visitors choose a day and time in the hero; the booking form is filled in automatically.
 - **Booking form with validation.** Checks name, phone, email and date (no past dates, no Sundays), shows accessible inline errors, moves focus to the first problem and ends with a confirmation screen.
-- **Accessible mobile menu.** Full-screen menu with `aria-expanded`, `Escape` to close and body scroll lock.
+- **Accessible mobile menu and FAQ.** Full-screen menu with `Escape` to close and scroll lock; animated FAQ accordion with proper ARIA attributes.
+- **Tested for quality.** Zero WCAG 2 AA issues in an axe-core audit, no horizontal scrolling from 320px to 1920px, full keyboard support.
 - **Conversion-focused layout.** Clear call to action, services with starting prices, first-visit steps, FAQ, opening hours and contact details.
-- **Fast and lightweight.** Statically rendered page, about 92 kB first-load JavaScript, no external images or fonts to load.
+- **Fast and lightweight.** Statically rendered page, about 96 kB first-load JavaScript, no animation libraries, no external images or fonts to load.
 - **Easy to customise.** All text, prices, hours and time slots live in one file: `src/lib/content.ts`.
 
-![Booking form](docs/preview-booking.jpg)
+![Smile preview slider](docs/preview-smile.jpg)
+
+![Services](docs/preview-services.jpg)
 
 ## Tech stack
 
@@ -60,12 +66,15 @@ src/
 │   └── globals.css      # Tailwind layers and shared component classes
 ├── components/
 │   ├── Header.tsx       # sticky header and mobile menu
-│   ├── Hero.tsx         # headline and interactive time picker
-│   ├── Services.tsx     # services grid with starting prices
+│   ├── Hero.tsx         # animated headline and interactive time picker
+│   ├── Services.tsx     # services grid with quick-book buttons
+│   ├── SmileSlider.tsx  # before/after whitening comparison
 │   ├── Visit.tsx        # first-visit steps
 │   ├── BookingForm.tsx  # validated booking form and confirmation
-│   ├── Faq.tsx          # accessible accordion (native <details>)
+│   ├── Faq.tsx          # animated, accessible accordion
 │   ├── Contact.tsx      # address, phone, email and opening hours
+│   ├── StickyBook.tsx   # mobile booking bar
+│   ├── Reveal.tsx       # scroll-reveal animation wrapper
 │   └── Icon.tsx         # inline SVG icon set
 └── lib/
     └── content.ts       # all editable content in one place

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Icon } from "./Icon";
 import { services, slots } from "@/lib/content";
 
 type Errors = Partial<Record<"name" | "phone" | "email" | "service" | "date", string>>;
@@ -15,6 +14,7 @@ export function BookingForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [minDate, setMinDate] = useState<string>();
+  const [highlight, setHighlight] = useState(false);
   useEffect(() => setMinDate(today()), []);
 
   useEffect(() => {
@@ -22,8 +22,22 @@ export function BookingForm() {
       const { date, time } = (e as CustomEvent<{ date: string; time: string }>).detail;
       setValues((v) => ({ ...v, date, time: slots.includes(time) ? time : v.time }));
     };
+    const onServiceClick = (e: MouseEvent) => {
+      const el = (e.target as HTMLElement).closest<HTMLElement>("[data-service]");
+      const id = el?.dataset.service;
+      if (id && services.some((s) => s.id === id)) {
+        setValues((v) => ({ ...v, service: id }));
+        setStatus("idle");
+        setHighlight(true);
+        window.setTimeout(() => setHighlight(false), 1600);
+      }
+    };
     window.addEventListener("prefill-slot", onPrefill);
-    return () => window.removeEventListener("prefill-slot", onPrefill);
+    document.addEventListener("click", onServiceClick);
+    return () => {
+      window.removeEventListener("prefill-slot", onPrefill);
+      document.removeEventListener("click", onServiceClick);
+    };
   }, []);
 
   const set = (k: keyof typeof values) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -57,14 +71,16 @@ export function BookingForm() {
   };
 
   const err = (k: keyof Errors) =>
-    errors[k] ? <p id={`e-${k}`} className="mt-1.5 text-sm text-red-700">{errors[k]}</p> : null;
+    errors[k] ? <p id={`e-${k}`} className="animate-rise mt-1.5 text-sm text-red-700">{errors[k]}</p> : null;
   const aria = (k: keyof Errors) => ({ "aria-invalid": !!errors[k], "aria-describedby": errors[k] ? `e-${k}` : undefined });
 
   if (status === "done") {
     const svc = services.find((s) => s.id === values.service)?.title;
     return (
-      <div className="rounded-3xl bg-white p-8 text-center ring-1 ring-ink/5 sm:p-12" role="status">
-        <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-teal-50 text-teal-700"><Icon name="check" className="h-7 w-7" /></span>
+      <div className="animate-rise rounded-3xl bg-white p-8 text-center shadow-[0_30px_60px_-30px_rgba(15,42,43,.35)] ring-1 ring-ink/5 sm:p-12" role="status">
+        <span className="animate-pop mx-auto grid h-16 w-16 place-items-center rounded-full bg-teal-700 text-white shadow-lg shadow-teal-700/30">
+          <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path className="animate-draw" d="M5 12l5 5L20 7" /></svg>
+        </span>
         <h3 className="mt-5 text-2xl font-semibold">Thanks, {values.name.split(" ")[0]}!</h3>
         <p className="mx-auto mt-3 max-w-md text-ink/70">
           Your request for <strong>{svc}</strong> on{" "}
@@ -77,7 +93,7 @@ export function BookingForm() {
   }
 
   return (
-    <form onSubmit={submit} noValidate className="grid gap-5 rounded-3xl bg-white p-6 ring-1 ring-ink/5 sm:grid-cols-2 sm:p-10">
+    <form onSubmit={submit} noValidate className="grid gap-5 rounded-3xl bg-white p-6 shadow-[0_30px_70px_-40px_rgba(15,42,43,.45)] ring-1 ring-ink/5 sm:grid-cols-2 sm:p-10">
       <div className="sm:col-span-2">
         <label htmlFor="f-name" className="mb-1.5 block text-sm font-medium">Full name</label>
         <input id="f-name" className="field" autoComplete="name" value={values.name} onChange={set("name")} {...aria("name")} />
@@ -95,7 +111,7 @@ export function BookingForm() {
       </div>
       <div className="sm:col-span-2">
         <label htmlFor="f-service" className="mb-1.5 block text-sm font-medium">Service</label>
-        <select id="f-service" className="field" value={values.service} onChange={set("service")}>
+        <select id="f-service" className={`field ${highlight ? "border-teal-600 ring-4 ring-teal-100" : ""}`} value={values.service} onChange={set("service")}>
           {services.map((s) => <option key={s.id} value={s.id}>{s.title}</option>)}
         </select>
       </div>
@@ -117,7 +133,9 @@ export function BookingForm() {
       <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-ink/70">We&apos;ll only use your details to arrange your visit.</p>
         <button type="submit" className="btn-primary min-w-[200px]" disabled={status === "sending"}>
-          {status === "sending" ? "Sending…" : "Request appointment"}
+          {status === "sending" ? (
+            <><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true" />Sending…</>
+          ) : "Request appointment"}
         </button>
       </div>
     </form>

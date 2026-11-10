@@ -5,6 +5,9 @@ import { Visit } from "@/components/Visit";
 import { BookingForm } from "@/components/BookingForm";
 import { Faq } from "@/components/Faq";
 import { Contact } from "@/components/Contact";
+import { SmileSlider } from "@/components/SmileSlider";
+import { StickyBook } from "@/components/StickyBook";
+import { Reveal } from "@/components/Reveal";
 import { clinic } from "@/lib/content";
 
 export default function Home() {
@@ -14,15 +17,16 @@ export default function Home() {
       <main>
         <Hero />
         <Services />
+        <SmileSlider />
         <Visit />
-        <section id="book" className="scroll-mt-24 pb-20 pt-4 md:pb-28">
+        <section id="book" className="scroll-mt-24 py-20 md:py-28">
           <div className="container-site">
-            <div className="mx-auto max-w-3xl text-center">
+            <Reveal className="mx-auto max-w-3xl text-center">
               <p className="eyebrow">Book online</p>
               <h2 className="h2 mt-3">Request your appointment</h2>
               <p className="mt-4 text-lg text-ink/70">Tell us when suits you and we&apos;ll confirm within a few hours.</p>
-            </div>
-            <div className="mx-auto mt-10 max-w-3xl"><BookingForm /></div>
+            </Reveal>
+            <Reveal delay={120} className="mx-auto mt-10 max-w-3xl"><BookingForm /></Reveal>
           </div>
         </section>
         <Faq />
@@ -34,6 +38,7 @@ export default function Home() {
           <p>Designed &amp; built by Md. Rabiul Islam</p>
         </div>
       </footer>
+      <StickyBook />
     </>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Icon } from "./Icon";
-import { slots } from "@/lib/content";
+import { services, slots } from "@/lib/content";
 
 function nextDays(n: number) {
   const out: Date[] = [];
@@ -16,22 +16,38 @@ function nextDays(n: number) {
 const isoLocal = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
+const quickServices = ["checkup", "whitening", "emergency"] as const;
+const shortName: Record<string, string> = { checkup: "Check-up", whitening: "Whitening", emergency: "Emergency" };
+
 export function Hero() {
   const [days, setDays] = useState<Date[]>([]);
   const [day, setDay] = useState(0);
-  const [slot, setSlot] = useState<string | null>(null);
-  useEffect(() => setDays(nextDays(4)), []);
+  const [svc, setSvc] = useState<(typeof quickServices)[number]>("checkup");
   const daySlots = slots.filter((_, i) => (i + day) % 4 !== 3);
+  const [slot, setSlot] = useState<string>(daySlots[0]);
 
-  const pick = (s: string) => {
-    setSlot(s);
+  useEffect(() => setDays(nextDays(4)), []);
+
+  // keep the booking form in sync with the widget
+  useEffect(() => {
     const d = days[day];
     if (!d) return;
-    window.dispatchEvent(new CustomEvent("prefill-slot", { detail: { date: isoLocal(d), time: s } }));
+    window.dispatchEvent(new CustomEvent("prefill-slot", { detail: { date: isoLocal(d), time: slot, service: svc } }));
+  }, [days, day, slot, svc]);
+
+  const chooseDay = (i: number) => {
+    setDay(i);
+    const next = slots.filter((_, j) => (j + i) % 4 !== 3);
+    if (!next.includes(slot)) setSlot(next[0]);
   };
 
+  const svcIndex = quickServices.indexOf(svc);
+  const price = services.find((x) => x.id === svc)?.from;
+  const d = days[day];
+  const dateLabel = d ? d.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short" }) : "";
+
   return (
-    <section id="top" className="relative -mt-16 overflow-x-clip pt-16 md:-mt-20 md:pt-20">
+    <section id="top" className="relative -mt-16 overflow-x-clip pt-16 lg:-mt-20 lg:pt-20">
       {/* animated background */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div className="animate-blob absolute -left-32 top-10 h-[28rem] w-[28rem] rounded-full bg-teal-100/70 blur-3xl" />
@@ -39,7 +55,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-[radial-gradient(rgba(15,42,43,.07)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" />
       </div>
 
-      <div className="container-site grid items-center gap-14 pb-20 pt-10 md:grid-cols-[1.1fr_.9fr] md:gap-16 md:pb-28 md:pt-16">
+      <div className="container-site grid items-center gap-14 pb-20 pt-10 lg:grid-cols-[1.05fr_.95fr] lg:gap-16 lg:pb-28 lg:pt-16">
         <div>
           <p className="animate-rise inline-flex items-center gap-2 rounded-full border border-teal-600/15 bg-white/70 px-3.5 py-1.5 text-[13px] font-medium text-teal-700 backdrop-blur">
             <span className="relative flex h-2 w-2">
@@ -74,62 +90,91 @@ export function Hero() {
           </ul>
         </div>
 
-        <div className="animate-rise relative" style={{ "--d": "250ms" } as React.CSSProperties}>
-          {/* floating chips */}
-          <div className="animate-float absolute -left-4 -top-6 z-10 hidden items-center gap-2.5 rounded-2xl bg-white px-4 py-3 shadow-xl ring-1 ring-ink/5 sm:flex md:-left-10" style={{ "--d": "-2s" } as React.CSSProperties}>
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-coral/15 text-coral"><Icon name="sparkle" className="h-5 w-5" /></span>
-            <div className="text-sm leading-tight"><p className="font-semibold">Pain-free care</p><p className="text-ink/70">We go at your pace</p></div>
-          </div>
-          <div className="animate-float absolute -bottom-6 -right-3 z-10 hidden items-center gap-2.5 rounded-2xl bg-teal-900 px-4 py-3 text-white shadow-xl sm:flex md:-right-8">
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-white/10"><Icon name="shield" className="h-5 w-5" /></span>
-            <div className="text-sm leading-tight"><p className="font-semibold">Clear prices</p><p className="text-white/75">Agreed before treatment</p></div>
-          </div>
-
-          <div className="relative rounded-[2rem] bg-white/90 p-6 shadow-[0_40px_80px_-30px_rgba(15,42,43,.4)] ring-1 ring-ink/5 backdrop-blur sm:p-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-ink/70">Check-up &amp; cleaning</p>
-                <p className="text-xl font-semibold">Choose a time</p>
+        {/* booking widget */}
+        <div className="animate-rise relative mx-auto w-full max-w-[30rem] lg:max-w-none" style={{ "--d": "250ms" } as React.CSSProperties}>
+          <div className="absolute inset-0 translate-x-1.5 translate-y-3 rotate-[2deg] sm:translate-x-3 sm:translate-y-4 sm:rotate-[3deg] rounded-[2rem] bg-gradient-to-br from-teal-600 to-teal-900 opacity-90" aria-hidden="true" />
+          <div className="relative overflow-hidden rounded-[2rem] bg-white shadow-[0_40px_80px_-30px_rgba(15,42,43,.45)] ring-1 ring-ink/5">
+            <div className="p-6 sm:p-7">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xl font-semibold">Book a visit</p>
+                  <p className="mt-0.5 text-sm text-ink/70">Takes under a minute</p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-800">
+                  <span className="h-1.5 w-1.5 rounded-full bg-teal-600" />
+                  Slots this week
+                </span>
               </div>
-              <span className="grid h-11 w-11 place-items-center rounded-full bg-teal-50 text-teal-700"><Icon name="calendar" /></span>
+
+              {/* service switcher */}
+              <div className="relative mt-6 grid grid-cols-3 rounded-full bg-cream p-1" role="radiogroup" aria-label="Service">
+                <span
+                  className="absolute inset-y-1 left-1 w-[calc((100%-0.5rem)/3)] rounded-full bg-white shadow-md ring-1 ring-ink/5 transition-transform duration-300 ease-out"
+                  style={{ transform: `translateX(${svcIndex * 100}%)` }}
+                  aria-hidden="true"
+                />
+                {quickServices.map((id) => (
+                  <button
+                    key={id}
+                    role="radio"
+                    aria-checked={svc === id}
+                    onClick={() => setSvc(id)}
+                    className={`relative z-10 rounded-full py-2 text-sm font-semibold transition-colors duration-300 ${svc === id ? "text-teal-800" : "text-ink/70 hover:text-ink"}`}
+                  >
+                    {shortName[id]}
+                  </button>
+                ))}
+              </div>
+
+              <p className="mt-6 text-xs font-semibold uppercase tracking-[0.12em] text-ink/70">Day</p>
+              <div className="mt-2 grid grid-cols-4 gap-2" role="radiogroup" aria-label="Day">
+                {(days.length ? days : Array.from({ length: 4 }, () => null)).map((dd, i) => (
+                  <button
+                    key={i}
+                    role="radio"
+                    aria-checked={day === i}
+                    onClick={() => chooseDay(i)}
+                    className={`rounded-2xl px-1 py-2.5 text-center transition duration-300 ${day === i ? "bg-teal-700 text-white shadow-lg shadow-teal-700/25" : "bg-cream hover:-translate-y-0.5 hover:bg-teal-50"}`}
+                  >
+                    <span className="block text-xs opacity-80">{dd ? dd.toLocaleDateString("en-US", { weekday: "short" }) : " "}</span>
+                    <span className="block text-lg font-semibold">{dd ? dd.getDate() : " "}</span>
+                  </button>
+                ))}
+              </div>
+
+              <p className="mt-5 text-xs font-semibold uppercase tracking-[0.12em] text-ink/70">Time</p>
+              <div key={day} className="mt-2 grid grid-cols-4 gap-2" role="radiogroup" aria-label="Time">
+                {daySlots.map((s, i) => (
+                  <button
+                    key={s}
+                    role="radio"
+                    aria-checked={slot === s}
+                    onClick={() => setSlot(s)}
+                    style={{ "--d": `${i * 40}ms` } as React.CSSProperties}
+                    className={`animate-rise rounded-xl border py-2.5 text-[15px] font-medium transition duration-200 ${slot === s ? "border-teal-700 bg-teal-50 text-teal-800" : "border-ink/10 hover:-translate-y-0.5 hover:border-teal-600"}`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+
+              <a href="#book" className="group btn-primary mt-6 w-full justify-between px-6">
+                <span className="flex flex-col items-start leading-tight">
+                  <span className="text-[15px]">Continue booking</span>
+                  <span className="text-xs font-medium text-white/80" aria-live="polite">{dateLabel ? `${dateLabel} · ${slot} · from $${price}` : " "}</span>
+                </span>
+                <svg viewBox="0 0 24 24" className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </a>
             </div>
 
-            <div className="mt-6 grid grid-cols-4 gap-2" role="tablist" aria-label="Day">
-              {(days.length ? days : Array.from({ length: 4 }, () => null)).map((d, i) => (
-                <button
-                  key={i}
-                  role="tab"
-                  aria-selected={day === i}
-                  onClick={() => { setDay(i); setSlot(null); }}
-                  className={`rounded-2xl px-1 py-3 text-center transition duration-300 ${day === i ? "scale-[1.04] bg-teal-700 text-white shadow-lg shadow-teal-700/30" : "bg-cream hover:-translate-y-0.5 hover:bg-teal-50"}`}
-                >
-                  <span className="block text-xs opacity-80">{d ? d.toLocaleDateString("en-US", { weekday: "short" }) : " "}</span>
-                  <span className="block text-lg font-semibold">{d ? d.getDate() : " "}</span>
-                </button>
+            <ul className="grid grid-cols-3 divide-x divide-ink/10 border-t border-ink/10 bg-cream/60 text-center text-xs text-ink/75">
+              {[["sparkle", "Pain-free care"], ["shield", "Clear prices"], ["calendar", "Free cancellation"]].map(([icon, label]) => (
+                <li key={label} className="flex flex-col items-center gap-1.5 px-2 py-3.5">
+                  <Icon name={icon} className="h-4 w-4 text-teal-600" />
+                  {label}
+                </li>
               ))}
-            </div>
-
-            <div key={day} className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {daySlots.map((s, i) => (
-                <button
-                  key={s}
-                  onClick={() => pick(s)}
-                  style={{ "--d": `${i * 50}ms` } as React.CSSProperties}
-                  className={`animate-rise rounded-xl border py-2.5 text-[15px] font-medium transition duration-200 ${slot === s ? "border-teal-700 bg-teal-50 text-teal-800 ring-2 ring-teal-700/20" : "border-ink/10 hover:-translate-y-0.5 hover:border-teal-600 hover:shadow-md"}`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-
-            <a
-              href="#book"
-              className={`btn-primary mt-6 w-full ${slot ? "" : "pointer-events-none !bg-ink/10 !text-ink/70 !shadow-none"}`}
-              aria-disabled={!slot}
-            >
-              {slot ? `Continue with ${slot}` : "Pick a time to continue"}
-            </a>
-            <p className="mt-3 text-center text-xs text-ink/70">Free cancellation up to 24 hours before</p>
+            </ul>
           </div>
         </div>
       </div>

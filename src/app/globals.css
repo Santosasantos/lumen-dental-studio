@@ -8,7 +8,7 @@ body { @apply bg-cream text-ink antialiased; }
 
 @layer components {
   .container-site { @apply mx-auto w-full max-w-site px-5 sm:px-8; }
-  .btn { @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-6 py-3 text-[15px] font-semibold transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-[.97]; }
+  .btn { @apply relative inline-flex whitespace-nowrap items-center justify-center gap-2 overflow-hidden rounded-full px-6 py-3 text-[15px] font-semibold transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-[.97]; }
   .btn-primary { @apply btn bg-teal-700 text-white shadow-[0_10px_30px_-12px_rgba(23,89,90,.8)] hover:-translate-y-0.5 hover:bg-teal-800 hover:shadow-[0_16px_34px_-12px_rgba(23,89,90,.9)]; }
   .btn-primary::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.28) 50%, transparent 70%); transform: translateX(-120%); transition: transform .7s ease; }
   .btn-primary:hover::after { transform: translateX(120%); }

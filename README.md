@@ -15,7 +15,7 @@ Built with **Next.js 14**, **React 18**, **TypeScript** and **Tailwind CSS**.
 - **Interactive smile preview.** A before/after whitening slider visitors can drag, tap or control with the keyboard, with a short demo sweep when it scrolls into view.
 - **Smooth, purposeful animation.** Staggered hero entrance, soft animated background shapes, floating info cards, scroll-reveal sections and hover effects, all switched off automatically for visitors who prefer reduced motion.
 - **One-click booking from anywhere.** Every service card has a "Book" button that pre-selects that service in the form; a sticky booking bar appears on phones.
-- **Interactive time picker.** Visitors choose a day and time in the hero; the booking form is filled in automatically.
+- **Quick-book widget.** Visitors switch between services, pick a day and time, and see a live summary with the starting price. The earliest slot is pre-selected, and every choice is carried into the full booking form.
 - **Booking form with validation.** Checks name, phone, email and date (no past dates, no Sundays), shows accessible inline errors, moves focus to the first problem and ends with a confirmation screen.
 - **Accessible mobile menu and FAQ.** Full-screen menu with `Escape` to close and scroll lock; animated FAQ accordion with proper ARIA attributes.
 - **Tested for quality.** Zero WCAG 2 AA issues in an axe-core audit, no horizontal scrolling from 320px to 1920px, full keyboard support.
@@ -66,7 +66,7 @@ src/
 │   └── globals.css      # Tailwind layers and shared component classes
 ├── components/
 │   ├── Header.tsx       # sticky header and mobile menu
-│   ├── Hero.tsx         # animated headline and interactive time picker
+│   ├── Hero.tsx         # animated headline and quick-book widget
 │   ├── Services.tsx     # services grid with quick-book buttons
 │   ├── SmileSlider.tsx  # before/after whitening comparison
 │   ├── Visit.tsx        # first-visit steps

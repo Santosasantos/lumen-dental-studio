@@ -19,8 +19,13 @@ export function BookingForm() {
 
   useEffect(() => {
     const onPrefill = (e: Event) => {
-      const { date, time } = (e as CustomEvent<{ date: string; time: string }>).detail;
-      setValues((v) => ({ ...v, date, time: slots.includes(time) ? time : v.time }));
+      const { date, time, service } = (e as CustomEvent<{ date: string; time: string; service?: string }>).detail;
+      setValues((v) => ({
+        ...v,
+        date,
+        time: slots.includes(time) ? time : v.time,
+        service: service && services.some((s) => s.id === service) ? service : v.service,
+      }));
     };
     const onServiceClick = (e: MouseEvent) => {
       const el = (e.target as HTMLElement).closest<HTMLElement>("[data-service]");
